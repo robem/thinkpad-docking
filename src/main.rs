@@ -1,6 +1,9 @@
 use std::io::prelude::*;
 use std::os::unix::net::UnixStream;
 
+extern crate quickrandr;
+use quickrandr::cmd_profile;
+
 const ACPID_SOCKET: &str = "/var/run/acpid.socket";
 
 const LID_OPEN: &[u8] = "button/lid LID open".as_bytes();
@@ -16,6 +19,22 @@ enum AcpidEvent {
     LidClose,
     Docked,
     Undocked,
+}
+
+fn handle_event(event: AcpidEvent) {
+    match event {
+        AcpidEvent::Docked => {
+            // The screen doesn't seem to be available right at the "dock" event
+            std::thread::sleep(std::time::Duration::from_secs(3));
+            let config = quickrandr::xdg_config_file().unwrap();
+            cmd_profile(&config, "docked", false)
+        },
+        AcpidEvent::Undocked => {
+            let config = quickrandr::xdg_config_file().unwrap();
+            cmd_profile(&config, "default", false)
+        },
+        _ => println!("{:?}: NOT IMPLEMENTED", event),
+    }
 }
 
 fn main() {
@@ -50,8 +69,9 @@ fn main() {
         };
 
         if event != AcpidEvent::Unknown {
-            println!("{:?}", event);
-            // TODO: Handle event!
+            std::thread::spawn(move || {
+                handle_event(event);
+            });
         }
     }
 }
