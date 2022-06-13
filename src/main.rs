@@ -11,8 +11,7 @@ const LID_CLOSE: &[u8] = "button/lid LID close".as_bytes();
 const DOCK: &[u8] = "ibm/hotkey LEN0068:00 00000080 00004010".as_bytes();
 const UNDOCK: &[u8] = "ibm/hotkey LEN0068:00 00000080 00004011".as_bytes();
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 enum AcpidEvent {
     Unknown,
     LidOpen,
@@ -46,14 +45,13 @@ fn main() {
         }
     };
 
+    let mut byte = vec![0; 1];
     let mut buffer = vec![0; 128];
     loop {
-        let mut byte = vec![0; 1];
         stream.read_exact(&mut byte).unwrap();
 
         // Events are separated by newline characters
         if byte[0] == 0x0a {
-            // println!("{}", buffer);
             buffer.clear();
             continue;
         }
