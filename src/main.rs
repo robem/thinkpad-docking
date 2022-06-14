@@ -32,7 +32,7 @@ fn handle_event(event: AcpidEvent) {
             let config = quickrandr::xdg_config_file().unwrap();
             cmd_profile(&config, "default", false)
         }
-        _ => println!("{:?}: NOT IMPLEMENTED", event),
+        _ => { /* Other events not handled */ }
     }
 }
 
