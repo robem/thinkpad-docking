@@ -1,4 +1,4 @@
-# Thinkd
+# Thinkpad-docking
 
 A simple daemon that handles a small subset of ACPID events related to thinkpad laptop.
 This program is similar to [dockd](https://github.com/libthinkpad/dockd).
