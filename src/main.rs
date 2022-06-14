@@ -1,4 +1,4 @@
-use std::io::prelude::*;
+use std::io::Read;
 use std::os::unix::net::UnixStream;
 
 extern crate quickrandr;
@@ -27,11 +27,11 @@ fn handle_event(event: AcpidEvent) {
             std::thread::sleep(std::time::Duration::from_secs(3));
             let config = quickrandr::xdg_config_file().unwrap();
             cmd_profile(&config, "docked", false)
-        },
+        }
         AcpidEvent::Undocked => {
             let config = quickrandr::xdg_config_file().unwrap();
             cmd_profile(&config, "default", false)
-        },
+        }
         _ => println!("{:?}: NOT IMPLEMENTED", event),
     }
 }
