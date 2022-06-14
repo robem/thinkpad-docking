@@ -36,13 +36,10 @@ fn handle_event(event: AcpidEvent) {
     }
 }
 
-fn main() {
+fn run_daemon() -> Result<(), String> {
     let mut stream = match UnixStream::connect(ACPID_SOCKET) {
         Ok(sock) => sock,
-        Err(e) => {
-            println!("Couldn't connect: {e:?}");
-            return;
-        }
+        Err(e) => return Err(format!("Failed to connect to acpid socket: {}", e)),
     };
 
     let mut byte = vec![0; 1];
@@ -72,4 +69,14 @@ fn main() {
             });
         }
     }
+}
+
+fn main() {
+    std::process::exit(match run_daemon() {
+        Ok(_) => 0,
+        Err(err) => {
+            eprintln!("error: {err:?}");
+            1
+        }
+    });
 }
