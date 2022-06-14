@@ -213,7 +213,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "thinkd"
+name = "thinkpad-docking"
 version = "0.1.0"
 dependencies = [
  "quickrandr",
